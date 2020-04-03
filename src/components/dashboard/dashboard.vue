@@ -5,12 +5,25 @@
   </div>
 </template>
 
-<style scoped>
-  h1, p {
-    text-align: center;
+<script>
+import axios from "axios";
+export default {
+  created() {
+    axios
+      .get("https://vuejs-forms-and-authentication.firebaseio.com/users.json")
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
   }
+};
+</script>
 
-  p {
-    color: red;
-  }
+<style scoped>
+h1,
+p {
+  text-align: center;
+}
+
+p {
+  color: red;
+}
 </style>
