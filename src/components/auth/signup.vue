@@ -65,16 +65,16 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from '../../axios-auth';
 
 export default {
   data() {
     return {
-      email: "",
+      email: '',
       age: null,
-      password: "",
-      confirmPassword: "",
-      country: "usa",
+      password: '',
+      confirmPassword: '',
+      country: 'usa',
       hobbyInputs: [],
       terms: false
     };
@@ -83,7 +83,7 @@ export default {
     onAddHobby() {
       const newHobby = {
         id: Math.random() * Math.random() * 1000,
-        value: ""
+        value: ''
       };
       this.hobbyInputs.push(newHobby);
     },
@@ -102,10 +102,7 @@ export default {
       };
       console.log(formData);
       axios
-        .post(
-          "https://vuejs-forms-and-authentication.firebaseio.com/users.json",
-          formData
-        )
+        .post('/users.json', formData)
         .then(response => console.log(response))
         .catch(error => console.log(error));
     }
