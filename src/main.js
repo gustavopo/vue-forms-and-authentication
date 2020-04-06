@@ -10,16 +10,16 @@ import store from './store';
 axios.defaults.baseURL =
   'https://vuejs-forms-and-authentication.firebaseio.com';
 //SetHeaders to requests
-axios.defaults.headers.common['Authorization'] = 'authHeader';
+//axios.defaults.headers.common['Authorization'] = 'authHeader';
 //Get Headers from requests
-axios.defaults.headers.get['Accept'] = 'application/json';
+axios.defaults.headers.get['Accepts'] = 'application/json';
 //use interceptors to manipulate configuration between requests
-const reqInterceptor = axios.interceptors.request.use(config => {
+const reqInterceptor = axios.interceptors.request.use((config) => {
   console.log('Request Interceptor', config);
   return config;
 });
 
-const respInterceptor = axios.interceptors.response.use(response => {
+const respInterceptor = axios.interceptors.response.use((response) => {
   console.log('Response Interceptor', response);
   return response;
 });
@@ -32,5 +32,5 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 });
