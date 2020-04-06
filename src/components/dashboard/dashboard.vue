@@ -11,7 +11,8 @@ import axios from 'axios';
 export default {
   computed: {
     email() {
-      return this.$store.getters.user.email;
+      //Return Just if User is SET, if user not set return false
+      return !this.$store.getters.user ? false : this.$store.getters.user.email;
     }
   },
   created() {
