@@ -60,21 +60,33 @@
               class="input"
               v-for="(hobbyInput, index) in hobbyInputs"
               :key="hobbyInput.id"
+              :class="{ invalid: $v.hobbyInputs.$each[index].$error }"
             >
               <label :for="hobbyInput.id">Hobby #{{ index }}</label>
               <input
                 type="text"
                 :id="hobbyInput.id"
+                @blur="$v.hobbyInputs.$each[index].value.$touch()"
                 v-model="hobbyInput.value"
               />
               <button @click="onDeleteHobby(hobbyInput.id)" type="button">
                 X
               </button>
             </div>
+            <p v-if="!$v.hobbyInputs.minLen">
+              You have to specify at least
+              {{ $v.hobbyInputs.$params.minLen.min }} hobbies.
+            </p>
+            <p v-if="!$v.hobbyInputs.required">Please add some hobbies.</p>
           </div>
         </div>
-        <div class="input inline">
-          <input type="checkbox" id="terms" v-model="terms" />
+        <div class="input inline" :class="{ invalid: $v.terms.$invalid }">
+          <input
+            type="checkbox"
+            id="terms"
+            v-model="terms"
+            @change="$v.terms.$touch()"
+          />
           <label for="terms">Accept Terms of Use</label>
         </div>
         <div class="submit">
@@ -93,6 +105,7 @@ import {
   minValue,
   minLength,
   sameAs,
+  requiredUnless,
 } from 'vuelidate/lib/validators';
 
 export default {
@@ -128,6 +141,22 @@ export default {
       sameAs: sameAs((vm) => {
         return vm.password;
       }),
+    },
+    terms: {
+      required: requiredUnless((vm) => {
+        return vm.country === 'germany';
+      }),
+    },
+    hobbyInputs: {
+      required,
+      minLen: minLength(2),
+      $each: {
+        value: {
+          //element level validations
+          required,
+          minLen: minLength(5),
+        },
+      },
     },
   },
   methods: {
