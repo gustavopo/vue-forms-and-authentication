@@ -2,9 +2,16 @@
   <div id="signup">
     <div class="signup-form">
       <form @submit.prevent="onSubmit">
-        <div class="input">
+        <div class="input" :class="{ invalid: $v.email.$error }">
           <label for="email">Mail</label>
-          <input type="email" id="email" v-model="email" />
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            @blur="$v.email.$touch()"
+          />
+          <p v-if="!$v.email.email">Please provide a valid email address!</p>
+          <p v-if="!$v.email.required">This field cannot be empty.</p>
         </div>
         <div class="input">
           <label for="age">Your Age</label>
@@ -16,7 +23,11 @@
         </div>
         <div class="input">
           <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" v-model="confirmPassword" />
+          <input
+            type="password"
+            id="confirm-password"
+            v-model="confirmPassword"
+          />
         </div>
         <div class="input">
           <label for="country">Country</label>
@@ -31,10 +42,20 @@
           <h3>Add some Hobbies</h3>
           <button @click="onAddHobby" type="button">Add Hobby</button>
           <div class="hobby-list">
-            <div class="input" v-for="(hobbyInput, index) in hobbyInputs" :key="hobbyInput.id">
+            <div
+              class="input"
+              v-for="(hobbyInput, index) in hobbyInputs"
+              :key="hobbyInput.id"
+            >
               <label :for="hobbyInput.id">Hobby #{{ index }}</label>
-              <input type="text" :id="hobbyInput.id" v-model="hobbyInput.value" />
-              <button @click="onDeleteHobby(hobbyInput.id)" type="button">X</button>
+              <input
+                type="text"
+                :id="hobbyInput.id"
+                v-model="hobbyInput.value"
+              />
+              <button @click="onDeleteHobby(hobbyInput.id)" type="button">
+                X
+              </button>
             </div>
           </div>
         </div>
@@ -51,6 +72,8 @@
 </template>
 
 <script>
+import { required, email } from 'vuelidate/lib/validators';
+
 export default {
   data() {
     return {
@@ -60,19 +83,27 @@ export default {
       confirmPassword: '',
       country: 'usa',
       hobbyInputs: [],
-      terms: false
+      terms: false,
     };
+  },
+  validations: {
+    //Must have the same name as the property in v-model
+    //Configure validations for 'email' input
+    email: {
+      required,
+      email,
+    },
   },
   methods: {
     onAddHobby() {
       const newHobby = {
         id: Math.random() * Math.random() * 1000,
-        value: ''
+        value: '',
       };
       this.hobbyInputs.push(newHobby);
     },
     onDeleteHobby(id) {
-      this.hobbyInputs = this.hobbyInputs.filter(hobby => hobby.id !== id);
+      this.hobbyInputs = this.hobbyInputs.filter((hobby) => hobby.id !== id);
     },
     onSubmit() {
       const formData = {
@@ -81,13 +112,13 @@ export default {
         password: this.password,
         confirmPassword: this.confirmPassword,
         country: this.country,
-        hobbies: this.hobbyInputs.map(hobby => hobby.value),
-        terms: this.terms
+        hobbies: this.hobbyInputs.map((hobby) => hobby.value),
+        terms: this.terms,
       };
       console.log(formData);
       this.$store.dispatch('signup', formData);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -135,6 +166,15 @@ export default {
 .input select {
   border: 1px solid #ccc;
   font: inherit;
+}
+
+.input.invalid label {
+  color: red;
+}
+
+.input.invalid input {
+  border: 1px solid red;
+  background-color: #ffc9aa;
 }
 
 .hobbies button {
